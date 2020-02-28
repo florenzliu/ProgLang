@@ -29,20 +29,15 @@
 (define (countCodesHelper ls)
   (cond ((null? ls) 0)
         ((null? (cdr ls)) 0)
-        ((not (list? ls)) 0)
         (else 
           (if (isCountryCode? (string (car ls) (cadr ls)) countryCode) 
-            ; when the result list is empty
-            (if (null? resStrList) 
+            ; when the current string is a country code
+            (if (not (isInResList? (string (car ls) (cadr ls)) resStrList))
+              ; when the current string is not in the result list 
               (begin
                 (set! resStrList (append resStrList (list (string (car ls) (cadr ls)))))
-                (+ 1 (countCodesHelper (cdr ls)))) 
-              ; when the result list is non-empty
-              (if (not (isInResList? (string (car ls) (cadr ls)) resStrList)) 
-                (begin
-                  (set! resStrList (append resStrList (string (car ls) (cadr ls))))
-                  (+ 1 (countCodesHelper (cdr ls))))
-                (countCodesHelper (cdr ls))))
+                (+ 1 (countCodesHelper (cdr ls))))
+              (countCodesHelper (cdr ls)))
             (countCodesHelper (cdr ls))))))
             
 ; check if a string is in the reference country code list
@@ -58,6 +53,39 @@
         (else (if (string=? ns (car resList)) #t
                 (isInResList? ns (cdr resList))))))
 
-;(display (countCodes "COABCOCOIN")) (newline)
+(display (countCodes "CNCNCNCNCCCN")) (newline)
 
 ; Question 3
+; define a list with unique characters
+(define uniqueCharList (list ))
+; define the maximum length of the substring with unique characters
+(define maxLen 0)
+
+(define (uniqueSubstring s)
+  (uniqueSubstringHelper (string->list s)))
+
+; return the maximum length of the substring with unique characters
+(define (uniqueSubstringHelper ls)
+  (if (null? ls) maxLen
+      (begin 
+        (set! uniqueCharList (list ))
+        ; update the maxLen by calling currUniqSubLen function
+        (set! maxLen (max maxLen (currUniqSubLen ls)))
+        (max maxLen (uniqueSubstringHelper (cdr ls))))))
+
+; return the length of the substring with unique characters that starts from first character of the list
+(define (currUniqSubLen ls)
+  (cond ((null? ls) 0)
+        ((char? ls) (if (isInPrevStr? ls uniqueCharList) 0 1))
+        (else (if (isInPrevStr? (car ls) uniqueCharList) 0
+                (begin
+                  (set! uniqueCharList (append uniqueCharList (list (car ls))))
+                  (+ 1 (currUniqSubLen (cdr ls))))))))
+
+(define (isInPrevStr? ch charList)
+  (cond ((null? charList) #f)
+        ((char? charList) (char=? ch charList))
+        (else (if (char=? ch (car charList)) #t
+                (isInPrevStr? ch (cdr charList))))))
+
+;(uniqueSubstring "AAEABCDAAABDKCS")
