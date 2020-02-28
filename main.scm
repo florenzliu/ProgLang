@@ -25,6 +25,7 @@
 (define resStrList (list ))
 
 (define (countCodes S)
+  (set! resStrList (list ))
   (countCodesHelper (string->list S)))
 
 (define (countCodesHelper ls)
@@ -63,6 +64,8 @@
 (define maxLen 0)
 
 (define (uniqueSubstring s)
+  (set! uniqueCharList (list ))
+  (set! maxLen 0)
   (uniqueSubstringHelper (string->list s)))
 
 ; return the maximum length of the substring with unique characters
@@ -72,7 +75,7 @@
         (set! uniqueCharList (list ))
         ; update the maxLen by calling currUniqSubLen function
         (set! maxLen (max maxLen (currUniqSubLen ls)))
-        (max maxLen (uniqueSubstringHelper (cdr ls)))))
+        (max maxLen (uniqueSubstringHelper (cdr ls))))))
 
 ; return the length of the substring with unique characters that starts from first character of the list
 (define (currUniqSubLen ls)
